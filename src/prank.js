@@ -1,6 +1,6 @@
 (function() {
-    const VIDEO_URL = 'https://github.com/thisisban/thisisban.github.io/blob/3a36764ae664a18db7ae400a4e6592382d98ead9/src/video.mp4?raw=true';
-    const AUDIO_URL = 'https://github.com/thisisban/thisisban.github.io/blob/3a36764ae664a18db7ae400a4e6592382d98ead9/src/audio.mp3?raw=true';
+    const VIDEO_URL = 'https://github.com/thisisban/thisisban.github.io/raw/refs/heads/main/src/video.mp4';
+    const AUDIO_URL = 'https://github.com/thisisban/thisisban.github.io/raw/refs/heads/main/src/audio.mp3';
     
     const container = document.createElement('div');
     container.id = 'prankContainer';
