@@ -1,4 +1,7 @@
 (function() {
+    const VIDEO_URL = 'https://github.com/thisisban/thisisban.github.io/blob/3a36764ae664a18db7ae400a4e6592382d98ead9/src/video.mp4?raw=true';
+    const AUDIO_URL = 'https://github.com/thisisban/thisisban.github.io/blob/3a36764ae664a18db7ae400a4e6592382d98ead9/src/audio.mp3?raw=true';
+    
     const container = document.createElement('div');
     container.id = 'prankContainer';
     container.style.cssText = `
@@ -16,11 +19,12 @@
     video.id = 'prankVideo';
     video.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
     video.playsInline = true;
+    video.webkitPlaysInline = true;
     
-    const source = document.createElement('source');
-    source.src = 'src/prank.mp4';
-    source.type = 'video/mp4';
-    video.appendChild(source);
+    const videoSource = document.createElement('source');
+    videoSource.src = VIDEO_URL;
+    videoSource.type = 'video/mp4';
+    video.appendChild(videoSource);
     
     const audio = document.createElement('audio');
     audio.id = 'prankAudio';
@@ -28,7 +32,7 @@
     audio.loop = true;
     
     const audioSource = document.createElement('source');
-    audioSource.src = 'src/prank.mp3';
+    audioSource.src = AUDIO_URL;
     audioSource.type = 'audio/mpeg';
     audio.appendChild(audioSource);
     
@@ -49,36 +53,53 @@
         return Promise.reject('Fullscreen not supported');
     }
     
-    function blockUserInput() {
+    function blockEscapeAndControls() {
         document.addEventListener('keydown', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return false;
-        }, true);
+        }, {capture: true, passive: false});
         
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return false;
-        }, true);
+        }, {capture: true});
         
-        container.addEventListener('click', function(e) {
+        document.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return false;
-        }, true);
+        }, {capture: true, passive: false});
         
         document.addEventListener('wheel', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return false;
-        }, {passive: false});
+        }, {capture: true, passive: false});
         
-        document.addEventListener('touchmove', function(e) {
+        document.addEventListener('touchstart', function(e) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return false;
-        }, {passive: false});
+        }, {capture: true, passive: false});
+        
+        document.addEventListener('fullscreenchange', function(e) {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestFullscreen(container);
+            }
+        }, {capture: true});
+        
+        document.addEventListener('webkitfullscreenchange', function(e) {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                requestFullscreen(container);
+            }
+        }, {capture: true});
     }
     
     const button = document.querySelector('.VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.LQeN7.MjT6xe.sOCCfd.brKGGd.BhQfub.zwjsl');
@@ -88,32 +109,74 @@
             e.preventDefault();
             e.stopPropagation();
             
-            button.style.display = 'none';
+            button.innerHTML = '<span class="VfPpkd-vQzf8d">Загрузка...</span>';
             
-            container.style.display = 'block';
+            video.load();
+            audio.load();
             
-            blockUserInput();
-            
-            requestFullscreen(container)
-                .then(() => {
-                    video.muted = true;
-                    video.play().catch(err => console.log('Video play error:', err));
+            setTimeout(() => {
+                button.style.display = 'none';
+                
+                container.style.display = 'block';
+                
+                blockEscapeAndControls();
+                
+                requestFullscreen(container)
+                    .then(() => {
+                        console.log('Fullscreen activated');
+                        
+                        video.muted = true;
+                        video.play()
+                            .then(() => {
+                                console.log('Video started');
+                                
+                                setTimeout(() => {
+                                    video.muted = false;
+                                    audio.play()
+                                        .then(() => console.log('Audio started'))
+                                        .catch(err => console.error('Audio play failed:', err));
+                                }, 1000);
+                            })
+                            .catch(err => {
+                                console.error('Video play failed:', err);
+                                video.muted = false;
+                                video.play().catch(e => console.error('Retry failed:', e));
+                            });
+                    })
+                    .catch(err => {
+                        console.log('Fullscreen failed, falling back:', err);
+                        container.style.display = 'block';
+                        video.muted = true;
+                        video.play()
+                            .then(() => {
+                                setTimeout(() => {
+                                    video.muted = false;
+                                    audio.play().catch(e => console.error('Audio fallback failed:', e));
+                                }, 1000);
+                            })
+                            .catch(e => console.error('Video fallback failed:', e));
+                    });
                     
-                    setTimeout(() => {
-                        video.muted = false;
-                        audio.play().catch(err => console.log('Audio play error:', err));
-                    }, 1000);
-                })
-                .catch(err => {
-                    console.log('Fullscreen error:', err);
-                    video.muted = true;
-                    video.play().catch(e => console.log('Video play error:', e));
-                    
-                    setTimeout(() => {
-                        video.muted = false;
-                        audio.play().catch(e => console.log('Audio play error:', e));
-                    }, 1000);
+                video.addEventListener('ended', function() {
+                    video.currentTime = 0;
+                    video.play();
                 });
+                
+            }, 500);
         });
     }
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        html, body {
+            overflow: hidden !important;
+        }
+        #prankContainer video::-webkit-media-controls {
+            display: none !important;
+        }
+        #prankContainer video::-webkit-media-controls-enclosure {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
 })();
