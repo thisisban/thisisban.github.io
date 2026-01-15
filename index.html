@@ -3,572 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Математическая игра</title>
-    <!-- Material 3 Web Components CDN -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@material/web/all.js"></script>
+    <title>Оплата</title>
+    <link href="https://fonts.googleapis.com/css2?family=Product+Sans&display=swap" rel="stylesheet">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Product Sans', Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
             padding: 20px;
-            color: #1f1f1f;
         }
-        
+
         .container {
             width: 100%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
-        
-        h1 {
-            font-family: 'Product Sans', 'Roboto', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 400;
-            color: #1f1f1f;
-            text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            color: #5f6368;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .game-card {
-            background-color: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
-            padding: 24px;
-            width: 100%;
             max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: windowExpand 1.5s ease-out forwards;
+            opacity: 0;
+            transform: scale(0.8);
         }
-        
-        .game-card:hover {
-            box-shadow: 0px 6px 24px rgba(0, 0, 0, 0.12);
+
+        @keyframes windowExpand {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
-        
-        .score-container {
+
+        .loader {
+            padding: 60px 40px;
+            text-align: center;
+            animation: fadeOut 0.5s ease-out 1.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .payment-info {
+            padding: 40px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 2s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .loader-content h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .payment-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .payment-details {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .payment-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f5f5f5;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 10px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .score-item {
+
+        .payment-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .amount {
+            color: #4dff91;
+            font-size: 32px !important;
+        }
+
+        .currency {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-left: 5px;
+        }
+
+        .action-buttons {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
+            gap: 15px;
         }
-        
-        .score-value {
-            font-size: 1.8rem;
-            font-weight: 500;
-            color: #1a73e8;
-        }
-        
-        .score-label {
-            font-size: 0.9rem;
-            color: #5f6368;
-        }
-        
-        .question-container {
-            background-color: #f8f9fa;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            margin: 10px 0;
-        }
-        
-        .question {
-            font-size: 2.5rem;
-            font-weight: 400;
-            color: #1f1f1f;
-            margin: 0;
-            font-family: 'Product Sans', 'Roboto', sans-serif;
-        }
-        
-        .input-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        
-        .result-message {
-            height: 24px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Product Sans', Arial, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s ease;
-        }
-        
-        .result-message.correct {
-            color: #0d904f;
-        }
-        
-        .result-message.incorrect {
-            color: #d93025;
-        }
-        
-        .result-message .material-symbols-outlined {
-            font-size: 1.2rem;
-        }
-        
-        .button-container {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        
-        .operations {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        
-        .operation-button {
-            background-color: #f1f3f4;
-            border: none;
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #5f6368;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .operation-button:hover {
-            background-color: #e8eaed;
-        }
-        
-        .operation-button.active {
-            background-color: #1a73e8;
-            color: white;
-        }
-        
-        .difficulty {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 10px;
-        }
-        
-        .difficulty-button {
-            background-color: #f1f3f4;
-            border: none;
-            border-radius: 12px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #5f6368;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .difficulty-button:hover {
-            background-color: #e8eaed;
-        }
-        
-        .difficulty-button.active {
-            background-color: #34a853;
-            color: white;
-        }
-        
-        .instructions {
-            background-color: #f8f9fa;
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 20px;
-            font-size: 0.95rem;
-            color: #5f6368;
-            line-height: 1.5;
-        }
-        
-        .instructions h3 {
-            color: #1f1f1f;
-            margin-bottom: 10px;
-            font-family: 'Product Sans', 'Roboto', sans-serif;
-            font-weight: 400;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-        }
-        
-        footer {
-            margin-top: 30px;
             text-align: center;
-            color: #5f6368;
-            font-size: 0.9rem;
-            padding: 10px;
         }
-        
-        @media (max-width: 600px) {
-            .game-card {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .question {
-                font-size: 2rem;
-            }
-            
-            .button-container {
-                flex-direction: column;
-            }
-            
-            .score-value {
-                font-size: 1.5rem;
-            }
+
+        .btn-primary {
+            background: #4dff91;
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            background: #3ae07e;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .info-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Математическая игра</h1>
-        <p class="subtitle">Проверьте свои математические навыки. Решите пример и введите ответ.</p>
-        
-        <div class="game-card">
-            <div class="score-container">
-                <div class="score-item">
-                    <div class="score-value" id="score">0</div>
-                    <div class="score-label">Очки</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-value" id="correct-count">0</div>
-                    <div class="score-label">Правильно</div>
-                </div>
-                <div class="score-item">
-                    <div class="score-value" id="incorrect-count">0</div>
-                    <div class="score-label">Неправильно</div>
-                </div>
-            </div>
-            
-            <div class="question-container">
-                <h2 class="question" id="math-question">5 + 3 = ?</h2>
-            </div>
-            
-            <div class="input-container">
-                <md-outlined-text-field 
-                    id="answer-input"
-                    label="Ваш ответ" 
-                    type="number"
-                    required
-                ></md-outlined-text-field>
-                
-                <div class="result-message" id="result-message"></div>
-            </div>
-            
-            <div class="button-container">
-                <md-filled-button id="submit-btn" style="flex-grow: 1;">
-                    <span slot="icon" class="material-symbols-outlined">check</span>
-                    Проверить ответ
-                </md-filled-button>
-                
-                <md-filled-tonal-button id="next-btn" style="flex-grow: 1;">
-                    <span slot="icon" class="material-symbols-outlined">skip_next</span>
-                    Следующий пример
-                </md-filled-tonal-button>
-            </div>
-            
-            <div class="operations">
-                <button class="operation-button active" data-operation="addition">Сложение (+)</button>
-                <button class="operation-button" data-operation="subtraction">Вычитание (-)</button>
-                <button class="operation-button" data-operation="multiplication">Умножение (×)</button>
-                <button class="operation-button" data-operation="division">Деление (÷)</button>
-                <button class="operation-button" data-operation="mixed">Смешанные</button>
-            </div>
-            
-            <div class="difficulty">
-                <button class="difficulty-button active" data-difficulty="easy">Легкий</button>
-                <button class="difficulty-button" data-difficulty="medium">Средний</button>
-                <button class="difficulty-button" data-difficulty="hard">Сложный</button>
+        <!-- Экран загрузки -->
+        <div class="loader">
+            <div class="loader-content">
+                <h2>Подготовка платежа</h2>
+                <div class="spinner"></div>
+                <p>Идет обработка данных...</p>
             </div>
         </div>
-        
-        <div class="instructions">
-            <h3>Как играть:</h3>
-            <ul>
-                <li>Решите математический пример, показанный выше</li>
-                <li>Введите ваш ответ в поле ввода</li>
-                <li>Нажмите "Проверить ответ" для проверки</li>
-                <li>Выберите тип операций и уровень сложности для настройки игры</li>
-                <li>Правильный ответ приносит 10 очков, неправильный - отнимает 5</li>
-            </ul>
+
+        <!-- Основная информация о платеже -->
+        <div class="payment-info">
+            <div class="payment-header">
+                <h2>Подтверждение оплаты</h2>
+                <p>Проверьте данные перед подтверждением</p>
+            </div>
+
+            <div class="payment-details">
+                <div class="payment-row">
+                    <div class="label">Сумма к оплате:</div>
+                    <div class="value amount" id="topayAmount">0<span class="currency">₽</span></div>
+                </div>
+                <div class="payment-row">
+                    <div class="label">Остаток на счете:</div>
+                    <div class="value" id="balanceAmount">0<span class="currency">₽</span></div>
+                </div>
+                <div class="payment-row">
+                    <div class="label">Баланс после оплаты:</div>
+                    <div class="value" id="afterPayment">0<span class="currency">₽</span></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="confirmBtn">Подтвердить оплату</button>
+                <button class="btn btn-secondary" id="cancelBtn">Отмена</button>
+            </div>
+
+            <div class="info-note">
+                Операция будет выполнена мгновенно
+            </div>
         </div>
-        
-        <footer>
-            Математическая игра &copy; 2023 | Создано с использованием Material 3
-        </footer>
     </div>
 
-    <script type="module">
-        // Импортируем Material Web Components
-        import '@material/web/all.js';
-        
-        // Игровые переменные
-        let score = 0;
-        let correctCount = 0;
-        let incorrectCount = 0;
-        let currentOperation = 'addition';
-        let currentDifficulty = 'easy';
-        let currentAnswer = 0;
-        
-        // Элементы DOM
-        const scoreElement = document.getElementById('score');
-        const correctCountElement = document.getElementById('correct-count');
-        const incorrectCountElement = document.getElementById('incorrect-count');
-        const mathQuestionElement = document.getElementById('math-question');
-        const answerInput = document.getElementById('answer-input');
-        const submitButton = document.getElementById('submit-btn');
-        const nextButton = document.getElementById('next-btn');
-        const resultMessage = document.getElementById('result-message');
-        const operationButtons = document.querySelectorAll('.operation-button');
-        const difficultyButtons = document.querySelectorAll('.difficulty-button');
-        
-        // Настройки сложности
-        const difficultySettings = {
-            easy: { min: 1, max: 10 },
-            medium: { min: 10, max: 50 },
-            hard: { min: 50, max: 100 }
-        };
-        
-        // Генерация случайного числа в заданном диапазоне
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+    <script>
+        // Получаем параметры из URL или заголовков
+        function getParameterByName(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
         }
-        
-        // Генерация математического примера
-        function generateMathProblem() {
-            const difficulty = difficultySettings[currentDifficulty];
-            let num1, num2, operationSymbol, answer;
+
+        // Получаем значения из параметров или устанавливаем по умолчанию
+        const topay = getParameterByName('topay') || '1500';
+        const curvalue = getParameterByName('curvalue') || '5000';
+
+        // Форматируем числа с разделителями
+        function formatNumber(num) {
+            return parseInt(num).toLocaleString('ru-RU');
+        }
+
+        // Вычисляем баланс после оплаты
+        function calculateAfterPayment() {
+            const topayNum = parseInt(topay);
+            const balanceNum = parseInt(curvalue);
+            return Math.max(0, balanceNum - topayNum);
+        }
+
+        // Обновляем значения на странице после загрузки
+        document.addEventListener('DOMContentLoaded', function() {
+            // Устанавливаем значения
+            document.getElementById('topayAmount').innerHTML = `${formatNumber(topay)}<span class="currency">₽</span>`;
+            document.getElementById('balanceAmount').innerHTML = `${formatNumber(curvalue)}<span class="currency">₽</span>`;
             
-            // Сброс сообщения о результате
-            resultMessage.textContent = '';
-            resultMessage.className = 'result-message';
+            const afterPayment = calculateAfterPayment();
+            document.getElementById('afterPayment').innerHTML = `${formatNumber(afterPayment)}<span class="currency">₽</span>`;
             
-            // Очистка поля ввода
-            answerInput.value = '';
-            
-            // Установка фокуса на поле ввода
-            answerInput.focus();
-            
-            // Генерация примера в зависимости от выбранной операции
-            if (currentOperation === 'addition') {
-                num1 = getRandomNumber(difficulty.min, difficulty.max);
-                num2 = getRandomNumber(difficulty.min, difficulty.max);
-                operationSymbol = '+';
-                answer = num1 + num2;
-            } 
-            else if (currentOperation === 'subtraction') {
-                num1 = getRandomNumber(difficulty.min, difficulty.max);
-                num2 = getRandomNumber(difficulty.min, Math.min(difficulty.max, num1));
-                operationSymbol = '-';
-                answer = num1 - num2;
+            // Подсвечиваем красным, если недостаточно средств
+            if (afterPayment < 0) {
+                document.getElementById('afterPayment').style.color = '#ff6b6b';
+                document.getElementById('confirmBtn').disabled = true;
+                document.getElementById('confirmBtn').style.opacity = '0.5';
+                document.getElementById('confirmBtn').style.cursor = 'not-allowed';
             }
-            else if (currentOperation === 'multiplication') {
-                // Для умножения используем меньшие числа для сложности
-                const multMin = Math.max(2, Math.floor(difficulty.min / 5));
-                const multMax = Math.max(5, Math.floor(difficulty.max / 10));
-                num1 = getRandomNumber(multMin, multMax);
-                num2 = getRandomNumber(multMin, multMax);
-                operationSymbol = '×';
-                answer = num1 * num2;
-            }
-            else if (currentOperation === 'division') {
-                // Для деления генерируем ответ, затем умножаем на делитель
-                const divisor = getRandomNumber(2, 10);
-                answer = getRandomNumber(Math.max(2, Math.floor(difficulty.min / 5)), Math.max(5, Math.floor(difficulty.max / 10)));
-                num1 = answer * divisor;
-                num2 = divisor;
-                operationSymbol = '÷';
-            }
-            else { // mixed - случайная операция
-                const operations = ['addition', 'subtraction', 'multiplication', 'division'];
-                const randomOp = operations[getRandomNumber(0, 3)];
-                
-                if (randomOp === 'addition') {
-                    num1 = getRandomNumber(difficulty.min, difficulty.max);
-                    num2 = getRandomNumber(difficulty.min, difficulty.max);
-                    operationSymbol = '+';
-                    answer = num1 + num2;
-                } 
-                else if (randomOp === 'subtraction') {
-                    num1 = getRandomNumber(difficulty.min, difficulty.max);
-                    num2 = getRandomNumber(difficulty.min, Math.min(difficulty.max, num1));
-                    operationSymbol = '-';
-                    answer = num1 - num2;
+
+            // Обработчики кнопок
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                if (!this.disabled) {
+                    alert(`Оплата на сумму ${topay} ₽ успешно выполнена!`);
+                    // В реальном приложении здесь будет отправка данных на сервер
                 }
-                else if (randomOp === 'multiplication') {
-                    const multMin = Math.max(2, Math.floor(difficulty.min / 5));
-                    const multMax = Math.max(5, Math.floor(difficulty.max / 10));
-                    num1 = getRandomNumber(multMin, multMax);
-                    num2 = getRandomNumber(multMin, multMax);
-                    operationSymbol = '×';
-                    answer = num1 * num2;
+            });
+
+            document.getElementById('cancelBtn').addEventListener('click', function() {
+                if (window.parent !== window) {
+                    // Закрываем iframe через родительское окно
+                    window.parent.postMessage('closePaymentFrame', '*');
+                } else {
+                    alert('Оплата отменена');
                 }
-                else { // division
-                    const divisor = getRandomNumber(2, 10);
-                    answer = getRandomNumber(Math.max(2, Math.floor(difficulty.min / 5)), Math.max(5, Math.floor(difficulty.max / 10)));
-                    num1 = answer * divisor;
-                    num2 = divisor;
-                    operationSymbol = '÷';
-                }
-            }
-            
-            // Сохраняем правильный ответ
-            currentAnswer = answer;
-            
-            // Отображаем пример
-            mathQuestionElement.textContent = `${num1} ${operationSymbol} ${num2} = ?`;
-            
-            return answer;
-        }
-        
-        // Проверка ответа
-        function checkAnswer() {
-            const userAnswer = parseInt(answerInput.value);
-            
-            if (isNaN(userAnswer)) {
-                resultMessage.textContent = 'Пожалуйста, введите число';
-                resultMessage.className = 'result-message incorrect';
-                return;
-            }
-            
-            if (userAnswer === currentAnswer) {
-                // Правильный ответ
-                score += 10;
-                correctCount++;
-                resultMessage.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Правильно! +10 очков';
-                resultMessage.className = 'result-message correct';
-            } else {
-                // Неправильный ответ
-                score = Math.max(0, score - 5);
-                incorrectCount++;
-                resultMessage.innerHTML = `<span class="material-symbols-outlined">cancel</span> Неправильно. Правильный ответ: ${currentAnswer}. -5 очков`;
-                resultMessage.className = 'result-message incorrect';
-            }
-            
-            // Обновление счетчиков
-            updateScore();
-            
-            // Блокировка кнопки отправки до следующего вопроса
-            submitButton.disabled = true;
-        }
-        
-        // Обновление счетчиков на экране
-        function updateScore() {
-            scoreElement.textContent = score;
-            correctCountElement.textContent = correctCount;
-            incorrectCountElement.textContent = incorrectCount;
-        }
-        
-        // Переход к следующему вопросу
-        function nextQuestion() {
-            generateMathProblem();
-            submitButton.disabled = false;
-        }
-        
-        // Обработчики событий для кнопок операций
-        operationButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Удаляем активный класс со всех кнопок
-                operationButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Добавляем активный класс к выбранной кнопке
-                button.classList.add('active');
-                
-                // Устанавливаем выбранную операцию
-                currentOperation = button.dataset.operation;
-                
-                // Генерируем новый пример
-                nextQuestion();
             });
         });
-        
-        // Обработчики событий для кнопок сложности
-        difficultyButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Удаляем активный класс со всех кнопок
-                difficultyButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Добавляем активный класс к выбранной кнопке
-                button.classList.add('active');
-                
-                // Устанавливаем выбранную сложность
-                currentDifficulty = button.dataset.difficulty;
-                
-                // Генерируем новый пример
-                nextQuestion();
-            });
-        });
-        
-        // Обработчики событий для основных кнопок
-        submitButton.addEventListener('click', checkAnswer);
-        nextButton.addEventListener('click', nextQuestion);
-        
-        // Обработчик клавиши Enter для отправки ответа
-        answerInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                checkAnswer();
+
+        // Обработка сообщений от родительского окна
+        window.addEventListener('message', function(event) {
+            if (event.data === 'closeFrame') {
+                // Можно добавить анимацию закрытия
+                document.querySelector('.container').style.transform = 'scale(0.8)';
+                document.querySelector('.container').style.opacity = '0';
+                setTimeout(() => {
+                    // В iframe нельзя закрыть окно, но можно скрыть
+                    document.body.innerHTML = '';
+                }, 300);
             }
-        });
-        
-        // Инициализация игры
-        document.addEventListener('DOMContentLoaded', () => {
-            // Генерируем первый пример
-            generateMathProblem();
-            
-            // Инициализируем счетчики
-            updateScore();
-            
-            // Устанавливаем Material Design компоненты
-            setTimeout(() => {
-                // Настраиваем поле ввода
-                if (answerInput && answerInput.shadowRoot) {
-                    const inputField = answerInput.shadowRoot.querySelector('input');
-                    if (inputField) {
-                        inputField.placeholder = "Введите ответ";
-                    }
-                }
-            }, 100);
         });
     </script>
 </body>
