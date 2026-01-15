@@ -2,7 +2,6 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата</title>
     <link href="https://fonts.googleapis.com/css2?family=Product+Sans&display=swap" rel="stylesheet">
     <style>
@@ -14,48 +13,40 @@
 
         body {
             font-family: 'Product Sans', Arial, sans-serif;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
+            background: white;
+            color: #333;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
             padding: 20px;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            animation: windowExpand 1.5s ease-out forwards;
-            opacity: 0;
-            transform: scale(0.8);
+            animation: expandWindow 1s ease-out 0.5s forwards;
+            transform-origin: top center;
+            transform: scaleY(0);
         }
 
-        @keyframes windowExpand {
+        @keyframes expandWindow {
             0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            70% {
-                opacity: 1;
-                transform: scale(1.05);
+                transform: scaleY(0);
             }
             100% {
-                opacity: 1;
-                transform: scale(1);
+                transform: scaleY(1);
             }
         }
 
-        .loader {
-            padding: 60px 40px;
+        .loading {
             text-align: center;
-            animation: fadeOut 0.5s ease-out 1.5s forwards;
+            padding: 40px 0;
+            animation: fadeOut 0.5s ease-out 2s forwards;
         }
 
         @keyframes fadeOut {
@@ -65,30 +56,13 @@
             }
         }
 
-        .payment-info {
-            padding: 40px;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out 2s forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        .loader-content h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4285F4;
             border-radius: 50%;
-            margin: 20px auto;
+            margin: 0 auto 20px;
             animation: spin 1s linear infinite;
         }
 
@@ -97,219 +71,108 @@
             100% { transform: rotate(360deg); }
         }
 
-        .payment-header {
-            text-align: center;
-            margin-bottom: 30px;
+        .info {
+            opacity: 0;
+            animation: fadeInInfo 0.5s ease-out 2.5s forwards;
+            padding: 20px 0;
         }
 
-        .payment-header h2 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        @keyframes fadeInInfo {
+            to {
+                opacity: 1;
+            }
         }
 
-        .payment-header p {
-            opacity: 0.9;
-            font-size: 16px;
-        }
-
-        .payment-details {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-        }
-
-        .payment-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .payment-row:last-child {
-            border-bottom: none;
+        .info-item {
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
         }
 
         .label {
-            font-size: 18px;
-            opacity: 0.9;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
         }
 
         .value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-        }
-
-        .amount {
-            color: #4dff91;
-            font-size: 32px !important;
+            color: #333;
         }
 
         .currency {
-            font-size: 20px;
-            opacity: 0.9;
-            margin-left: 5px;
+            margin-left: 4px;
+            color: #666;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
+        .amount {
+            color: #ea4335;
         }
 
-        .btn {
-            flex: 1;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Product Sans', Arial, sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+        .balance {
+            color: #34a853;
         }
 
-        .btn-primary {
-            background: #4dff91;
-            color: #1a1a2e;
-        }
-
-        .btn-primary:hover {
-            background: #3ae07e;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .info-note {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            opacity: 0.8;
+        .remaining {
+            color: #4285F4;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Экран загрузки -->
-        <div class="loader">
-            <div class="loader-content">
-                <h2>Подготовка платежа</h2>
-                <div class="spinner"></div>
-                <p>Идет обработка данных...</p>
-            </div>
+        <div class="loading">
+            <div class="spinner"></div>
+            <div class="label">Загрузка информации о платеже...</div>
         </div>
 
-        <!-- Основная информация о платеже -->
-        <div class="payment-info">
-            <div class="payment-header">
-                <h2>Подтверждение оплаты</h2>
-                <p>Проверьте данные перед подтверждением</p>
+        <div class="info">
+            <div class="info-item">
+                <div class="label">Сумма к оплате:</div>
+                <div class="value amount" id="topayAmount">0<span class="currency">₽</span></div>
             </div>
-
-            <div class="payment-details">
-                <div class="payment-row">
-                    <div class="label">Сумма к оплате:</div>
-                    <div class="value amount" id="topayAmount">0<span class="currency">₽</span></div>
-                </div>
-                <div class="payment-row">
-                    <div class="label">Остаток на счете:</div>
-                    <div class="value" id="balanceAmount">0<span class="currency">₽</span></div>
-                </div>
-                <div class="payment-row">
-                    <div class="label">Баланс после оплаты:</div>
-                    <div class="value" id="afterPayment">0<span class="currency">₽</span></div>
-                </div>
+            
+            <div class="info-item">
+                <div class="label">Остаток на счете:</div>
+                <div class="value balance" id="balanceAmount">0<span class="currency">₽</span></div>
             </div>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="confirmBtn">Подтвердить оплату</button>
-                <button class="btn btn-secondary" id="cancelBtn">Отмена</button>
-            </div>
-
-            <div class="info-note">
-                Операция будет выполнена мгновенно
+            
+            <div class="info-item">
+                <div class="label">Останется после оплаты:</div>
+                <div class="value remaining" id="afterPayment">0<span class="currency">₽</span></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Получаем параметры из URL или заголовков
+        // Получаем параметры из URL
         function getParameterByName(name) {
             const url = new URL(window.location.href);
             return url.searchParams.get(name);
         }
 
-        // Получаем значения из параметров или устанавливаем по умолчанию
-        const topay = getParameterByName('topay') || '1500';
-        const curvalue = getParameterByName('curvalue') || '5000';
-
-        // Форматируем числа с разделителями
+        // Форматируем число с пробелами
         function formatNumber(num) {
             return parseInt(num).toLocaleString('ru-RU');
         }
 
-        // Вычисляем баланс после оплаты
-        function calculateAfterPayment() {
-            const topayNum = parseInt(topay);
-            const balanceNum = parseInt(curvalue);
-            return Math.max(0, balanceNum - topayNum);
-        }
-
-        // Обновляем значения на странице после загрузки
+        // Загружаем и отображаем данные
         document.addEventListener('DOMContentLoaded', function() {
+            // Получаем значения из параметров URL
+            const topay = getParameterByName('topay') || '1500';
+            const curvalue = getParameterByName('curvalue') || '5000';
+            
+            // Вычисляем остаток после оплаты
+            const afterPayment = parseInt(curvalue) - parseInt(topay);
+            
             // Устанавливаем значения
             document.getElementById('topayAmount').innerHTML = `${formatNumber(topay)}<span class="currency">₽</span>`;
             document.getElementById('balanceAmount').innerHTML = `${formatNumber(curvalue)}<span class="currency">₽</span>`;
-            
-            const afterPayment = calculateAfterPayment();
             document.getElementById('afterPayment').innerHTML = `${formatNumber(afterPayment)}<span class="currency">₽</span>`;
             
-            // Подсвечиваем красным, если недостаточно средств
+            // Если недостаточно средств, выделяем красным
             if (afterPayment < 0) {
-                document.getElementById('afterPayment').style.color = '#ff6b6b';
-                document.getElementById('confirmBtn').disabled = true;
-                document.getElementById('confirmBtn').style.opacity = '0.5';
-                document.getElementById('confirmBtn').style.cursor = 'not-allowed';
-            }
-
-            // Обработчики кнопок
-            document.getElementById('confirmBtn').addEventListener('click', function() {
-                if (!this.disabled) {
-                    alert(`Оплата на сумму ${topay} ₽ успешно выполнена!`);
-                    // В реальном приложении здесь будет отправка данных на сервер
-                }
-            });
-
-            document.getElementById('cancelBtn').addEventListener('click', function() {
-                if (window.parent !== window) {
-                    // Закрываем iframe через родительское окно
-                    window.parent.postMessage('closePaymentFrame', '*');
-                } else {
-                    alert('Оплата отменена');
-                }
-            });
-        });
-
-        // Обработка сообщений от родительского окна
-        window.addEventListener('message', function(event) {
-            if (event.data === 'closeFrame') {
-                // Можно добавить анимацию закрытия
-                document.querySelector('.container').style.transform = 'scale(0.8)';
-                document.querySelector('.container').style.opacity = '0';
-                setTimeout(() => {
-                    // В iframe нельзя закрыть окно, но можно скрыть
-                    document.body.innerHTML = '';
-                }, 300);
+                document.getElementById('afterPayment').style.color = '#ea4335';
             }
         });
     </script>
