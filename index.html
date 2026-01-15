@@ -3,198 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Game - Educational Game for Kids</title>
+    <title>Math Game</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
     
     <!-- Material Symbols -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Шрифты как в Flet -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        /* Product Sans не доступен в Google Fonts, используем Roboto как запасной */
+        /* Google Sans Code похож на Source Code Pro */
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap');
+        
+        /* Создаем кастомные свойства для шрифтов как в Flet */
+        :root {
+            --font-product-sans: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-google-sans-code: 'Source Code Pro', 'Roboto Mono', monospace;
+            --font-material-icons: 'Material Symbols Outlined';
+        }
+    </style>
     
-    <!-- Confetti Library -->
+    <!-- Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     
     <style>
-        /* CSS Reset */
+        /* Reset и базовые стили */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Material 3 Color Tokens */
-        :root {
-            /* Primary Colors */
-            --primary: #6750A4;
-            --on-primary: #FFFFFF;
-            --primary-container: #EADDFF;
-            --on-primary-container: #21005D;
-            
-            /* Neutral Colors */
-            --background: #FFFBFE;
-            --on-background: #1C1B1F;
-            --surface: #FFFBFE;
-            --on-surface: #1C1B1F;
-            --surface-variant: #E7E0EC;
-            --on-surface-variant: #49454F;
-            --outline: #79747E;
-            
-            /* Game Colors */
-            --success: #4CAF50;
-            --error: #F44336;
-            --warning: #FF9800;
-            --accent: #FFC107;
-            
-            /* Elevation */
-            --shadow-1: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow-2: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-3: 0 10px 15px rgba(0,0,0,0.1);
-            --shadow-4: 0 20px 25px rgba(0,0,0,0.15);
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: var(--font-product-sans);
+            background: linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
-            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* Game Container */
-        .game-container {
-            width: 100%;
-            max-width: 400px;
-            background: var(--surface);
+        /* Контейнер для центрирования (как в Flet) */
+        .game-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Основная карточка (точная копия Flet) */
+        .math-game-card {
+            background: white;
             border-radius: 24px;
             box-shadow: 
-                var(--shadow-1),
-                var(--shadow-2),
-                var(--shadow-3),
-                var(--shadow-4);
-            overflow: hidden;
-            border: 1px solid var(--outline);
+                0 1px 3px rgba(0,0,0,0.12),
+                0 1px 2px rgba(0,0,0,0.24),
+                0 3px 6px rgba(0,0,0,0.16),
+                0 6px 12px rgba(0,0,0,0.12),
+                0 12px 24px rgba(0,0,0,0.08),
+                0 24px 48px rgba(0,0,0,0.06);
+            padding: 24px;
+            width: 400px;
             position: relative;
+            overflow: hidden;
+            border: none;
         }
 
-        /* Header */
-        .game-header {
-            padding: 20px 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, #7E69AB 100%);
-            color: var(--on-primary);
-            text-align: center;
-        }
-
-        .game-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
+        /* Контейнер внутри карточки с Stack как в Flet */
+        .card-content {
+            position: relative;
+            width: 100%;
+            height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
         }
 
-        .game-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-            font-weight: 400;
+        /* Два режима - как Stack в Flet */
+        .game-mode {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: opacity 300ms ease-in-out;
         }
 
-        /* Game Body */
-        .game-body {
-            padding: 24px;
+        /* Режим ввода */
+        .input-mode {
+            opacity: 1;
+            z-index: 2;
         }
 
-        /* Problem Display */ 
-        .problem-display {
+        .input-mode.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Режим результата */
+        .result-mode {
+            opacity: 0;
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-bottom: 32px;
-            padding: 20px;
-            background: var(--surface-variant);
-            border-radius: 16px;
-            border: 2px solid var(--outline);
         }
 
-        .problem-text {
-            font-size: 48px;
+        .result-mode.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Заголовок как ListTile в Flet */
+        .problem-header {
+            margin-bottom: 24px;
+        }
+
+        .problem-title {
+            font-size: 32px;
             font-weight: 700;
-            color: var(--on-surface);
-            margin-bottom: 8px;
+            color: #1a1a1a;
+            margin-bottom: 4px;
             font-variant-numeric: tabular-nums;
-            line-height: 1.2;
+            text-align: center;
         }
 
-        .problem-hint {
+        .problem-subtitle {
             font-size: 14px;
-            color: var(--on-surface-variant);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #666;
+            text-align: center;
             opacity: 0.8;
         }
 
-        /* Input Area */
-        .input-area {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .answer-input-container {
-            position: relative;
-        }
-
+        /* Поле ввода как в Flet */
         .answer-input {
             width: 100%;
-            padding: 20px 24px;
-            font-size: 24px;
-            font-family: 'Roboto', sans-serif;
-            background: var(--surface);
-            border: 2px solid var(--outline);
-            border-radius: 16px;
-            color: var(--on-surface);
+            padding: 16px;
+            font-size: 18px;
+            font-family: var(--font-product-sans);
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            color: #1a1a1a;
             transition: all 0.2s ease;
+            margin-bottom: 20px;
             text-align: center;
-            font-variant-numeric: tabular-nums;
         }
 
         .answer-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.2);
+            border-color: #FFD600;
+            background: white;
         }
 
+        /* Кнопка как в Flet */
         .check-button {
-            background: var(--primary);
-            color: var(--on-primary);
+            background: #FFD600;
+            color: #1a1a1a;
             border: none;
-            border-radius: 20px;
-            padding: 20px 32px;
-            font-size: 18px;
-            font-weight: 500;
-            font-family: 'Roboto', sans-serif;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: var(--font-product-sans);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             width: 100%;
+            text-transform: none;
+            letter-spacing: normal;
         }
 
         .check-button:hover:not(:disabled) {
-            background: color-mix(in srgb, var(--primary) 90%, black);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-2);
-        }
-
-        .check-button:active:not(:disabled) {
-            transform: translateY(0);
+            background: #FFC400;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 214, 0, 0.3);
         }
 
         .check-button:disabled {
@@ -202,353 +194,294 @@
             cursor: not-allowed;
         }
 
-        /* Result Display */
-        .result-display {
-            text-align: center;
-            padding: 40px 20px;
+        /* Иконка результата как в Flet */
+        .result-icon-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px;
-            min-height: 280px;
             justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 120px;
+            height: 120px;
         }
 
         .result-icon {
-            width: 120px;
-            height: 120px;
+            font-size: 120px;
+            color: #4CAF50;
+            transform-origin: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-size: 96px;
         }
 
         .result-icon.success {
-            color: var(--success);
+            color: #4CAF50;
         }
 
         .result-icon.error {
-            color: var(--error);
+            color: #F44336;
         }
 
+        .result-icon.settings {
+            color: #2196F3;
+        }
+
+        /* Текст результата */
         .result-text {
-            font-size: 28px;
+            font-size: 20px;
             font-weight: 500;
-            color: var(--on-surface);
+            margin-bottom: 12px;
+            color: #1a1a1a;
         }
 
+        .result-text.success {
+            color: #4CAF50;
+        }
+
+        .result-text.error {
+            color: #F44336;
+        }
+
+        .result-text.settings {
+            color: #2196F3;
+        }
+
+        /* Счетчик серии */
         .strike-counter {
             font-size: 16px;
-            color: var(--on-surface-variant);
-            background: var(--surface-variant);
-            padding: 10px 20px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 8px 16px;
             border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-block;
+            opacity: 0.8;
         }
 
-        .record-badge {
-            color: var(--accent);
-            font-weight: 500;
+        .strike-counter.hidden {
+            display: none;
         }
 
-        /* Game Stats */
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 24px;
-            padding: 16px;
-            background: var(--surface-variant);
-            border-radius: 16px;
-            font-size: 14px;
+        /* GIF конфетти */
+        .confetti-gif {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            display: none;
         }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            text-align: center;
+        .confetti-gif.active {
+            display: block;
         }
 
-        .stat-label {
-            color: var(--on-surface-variant);
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--on-surface);
-            font-variant-numeric: tabular-nums;
-        }
-
-        /* Footer */
+        /* Футер с версией */
         .game-footer {
-            padding: 16px 24px;
+            margin-top: 24px;
             text-align: center;
-            border-top: 1px solid var(--outline);
-            background: var(--surface-variant);
-            font-family: 'Source Code Pro', monospace;
+            font-family: var(--font-google-sans-code);
             font-size: 12px;
-            color: var(--on-surface-variant);
-            opacity: 0.7;
+            color: #999;
+            opacity: 0.5;
         }
 
-        /* Utility Classes */
+        /* Анимации как в Flet */
+        @keyframes rotateAndScale {
+            0% {
+                transform: rotate(-45deg) scale(4);
+            }
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+
+        @keyframes rotateSlow {
+            0% {
+                transform: rotate(-720deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        .animate-fast {
+            animation: rotateAndScale 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .animate-slow {
+            animation: rotateSlow 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            .math-game-card {
+                width: 320px;
+                padding: 16px;
+            }
+            
+            .card-content {
+                height: 250px;
+            }
+            
+            .problem-title {
+                font-size: 28px;
+            }
+            
+            .result-icon-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .result-icon {
+                font-size: 100px;
+            }
+        }
+
+        /* Скрытые элементы */
         .hidden {
             display: none !important;
         }
 
-        .fade-in {
-            animation: fadeIn 0.3s ease;
+        /* Material Icons */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        .shake {
-            animation: shake 0.5s ease;
-        }
-
-        .pulse {
-            animation: pulse 1s ease infinite;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        @keyframes iconEntry {
-            0% { transform: rotate(-45deg) scale(3); opacity: 0; }
-            60% { transform: rotate(10deg) scale(1.1); }
-            100% { transform: rotate(0) scale(1); opacity: 1; }
-        }
-
-        .icon-animation {
-            animation: iconEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .game-container {
-                max-width: 100%;
-                margin: 0 8px;
-            }
-            
-            .game-body {
-                padding: 16px;
-            }
-            
-            .problem-text {
-                font-size: 40px;
-            }
-            
-            .result-icon {
-                width: 100px;
-                height: 100px;
-                font-size: 80px;
-            }
-            
-            .result-text {
-                font-size: 24px;
-            }
-        }
-
-        /* Iframe specific */
-        html, body {
+        /* Конфетти canvas */
+        #confettiCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
         }
 
-        body {
-            min-height: 100%;
-        }
-
-        /* Loading State */
+        /* Загрузка */
         .loading {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: var(--surface);
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            border-radius: 24px;
         }
 
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid var(--surface-variant);
-            border-top-color: var(--primary);
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #FFD600;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading" id="loadingScreen">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Game Container -->
-    <div class="game-container hidden" id="gameContainer">
-        <!-- Header -->
-        <div class="game-header">
-            <div class="game-title">
-                <span class="material-symbols-outlined">calculate</span>
-                Математическая Игра
+    <!-- Контейнер как в Flet -->
+    <div class="game-wrapper">
+        <!-- Основная карточка -->
+        <div class="math-game-card">
+            <!-- Loading -->
+            <div class="loading" id="loadingScreen">
+                <div class="spinner"></div>
             </div>
-            <div class="game-subtitle">Тренируй счёт и логику</div>
-        </div>
 
-        <!-- Game Body -->
-        <div class="game-body">
-            <!-- Input Mode -->
-            <div id="inputMode">
-                <div class="problem-display">
-                    <div class="problem-text" id="problemText">5 + 3 =</div>
-                    <div class="problem-hint">Реши пример</div>
-                </div>
-
-                <div class="input-area">
-                    <div class="answer-input-container">
-                        <input 
-                            type="number" 
-                            class="answer-input" 
-                            id="answerInput"
-                            placeholder="Введите ответ"
-                            inputmode="numeric"
-                            pattern="[0-9\-]*"
-                            autofocus
-                        />
+            <!-- Контент карточки -->
+            <div class="card-content">
+                <!-- Режим ввода -->
+                <div class="game-mode input-mode" id="inputMode">
+                    <div class="problem-header">
+                        <div class="problem-title" id="problemText">5 + 3 =</div>
+                        <div class="problem-subtitle">Найди значение выражения</div>
                     </div>
                     
+                    <input 
+                        type="number" 
+                        class="answer-input" 
+                        id="answerInput"
+                        placeholder="Решение"
+                        inputmode="numeric"
+                        pattern="[0-9\-]*"
+                        autofocus
+                    />
+                    
                     <button class="check-button" id="checkButton">
-                        <span class="material-symbols-outlined">check_circle</span>
+                        <span class="material-symbols-outlined">check</span>
                         Проверить
                     </button>
                 </div>
-            </div>
 
-            <!-- Result Mode -->
-            <div class="result-display hidden" id="resultMode">
-                <div class="result-icon" id="resultIcon">
-                    <span class="material-symbols-outlined">check_circle</span>
+                <!-- Режим результата -->
+                <div class="game-mode result-mode" id="resultMode">
+                    <div class="result-icon-container">
+                        <div class="result-icon success" id="resultIcon">
+                            <span class="material-symbols-outlined">check_circle</span>
+                        </div>
+                        <!-- GIF конфетти для особых случаев -->
+                        <img src="https://i.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif" 
+                             class="confetti-gif" 
+                             id="confettiGif"
+                             alt="Конфетти"
+                             crossorigin="anonymous">
+                    </div>
+                    
+                    <div class="result-text success" id="resultText">Верно!</div>
+                    
+                    <div class="strike-counter hidden" id="strikeCounter">
+                        <span id="strikeText">Подряд: 0 (Рекорд: 0)</span>
+                    </div>
                 </div>
-                <div class="result-text" id="resultText">Верно!</div>
-                <div class="strike-counter hidden" id="strikeCounter">
-                    <span class="material-symbols-outlined">trending_up</span>
-                    <span id="strikeText"></span>
-                </div>
             </div>
-        </div>
 
-        <!-- Game Stats -->
-        <div class="game-stats">
-            <div class="stat-item">
-                <div class="stat-label">Сложность</div>
-                <div class="stat-value" id="difficultyValue">10</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Серия</div>
-                <div class="stat-value" id="strikeValue">0</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Рекорд</div>
-                <div class="stat-value" id="recordValue">0</div>
-            </div>
-        </div>
+            <!-- Футер с версией -->
+            <div class="game-footer" id="versionText">Math Game v1.0.2 | Biscuit</div>
 
-        <!-- Footer -->
-        <div class="game-footer">
-            Math Game v1.0 • Для детей 6-10 лет
+            <!-- Canvas для конфетти -->
+            <canvas id="confettiCanvas"></canvas>
         </div>
     </div>
 
-    <!-- Confetti Canvas (hidden) -->
-    <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: none;"></canvas>
-
     <script>
-        // Math Game Class
         class MathGame {
             constructor() {
-                // Game State
+                // Состояние игры (как в Flet)
                 this.difficulty = 10;
                 this.record = 0;
                 this.strike = 0;
                 this.currentProblem = { a: 0, b: 0, operand: '+' };
                 this.isChecking = false;
-                this.isLoading = true;
+                this.gameState = 'input'; // 'input' или 'result'
                 
-                // Configuration
-                this.config = {
-                    minDifficulty: 10,
-                    maxDifficulty: 1000,
-                    difficulties: [10, 20, 50, 100, 200, 500, 1000],
-                    showStrikeAt: 3,
-                    confettiEvery: 5,
-                    checkDuration: 2000, // ms
-                    settingsDuration: 3000 // ms for settings applied
-                };
-                
-                // DOM Elements
+                // DOM элементы
                 this.elements = {
                     loadingScreen: document.getElementById('loadingScreen'),
-                    gameContainer: document.getElementById('gameContainer'),
-                    
-                    // Modes
                     inputMode: document.getElementById('inputMode'),
                     resultMode: document.getElementById('resultMode'),
-                    
-                    // Problem
                     problemText: document.getElementById('problemText'),
-                    
-                    // Input
                     answerInput: document.getElementById('answerInput'),
                     checkButton: document.getElementById('checkButton'),
-                    
-                    // Result
                     resultIcon: document.getElementById('resultIcon'),
                     resultText: document.getElementById('resultText'),
                     strikeCounter: document.getElementById('strikeCounter'),
                     strikeText: document.getElementById('strikeText'),
-                    
-                    // Stats
-                    difficultyValue: document.getElementById('difficultyValue'),
-                    strikeValue: document.getElementById('strikeValue'),
-                    recordValue: document.getElementById('recordValue'),
-                    
-                    // Canvas
+                    versionText: document.getElementById('versionText'),
+                    confettiGif: document.getElementById('confettiGif'),
                     confettiCanvas: document.getElementById('confettiCanvas')
                 };
                 
-                // Initialize
                 this.init();
             }
             
-            // Initialize Game
             init() {
                 this.setupCanvas();
                 this.setupEventListeners();
@@ -556,77 +489,70 @@
                 this.generateProblem();
                 this.updateDisplay();
                 this.hideLoading();
+                
+                // Фокус на поле ввода
+                setTimeout(() => {
+                    this.elements.answerInput.focus();
+                }, 100);
             }
             
-            // Setup Canvas for Confetti
             setupCanvas() {
-                this.elements.confettiCanvas.width = window.innerWidth;
-                this.elements.confettiCanvas.height = window.innerHeight;
+                // Настройка canvas для конфетти
+                const canvas = this.elements.confettiCanvas;
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
             }
             
-            // Setup Event Listeners
             setupEventListeners() {
-                // Check button
+                // Кнопка проверки
                 this.elements.checkButton.addEventListener('click', () => this.checkAnswer());
                 
-                // Enter key in input
+                // Enter в поле ввода
                 this.elements.answerInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter' && !this.isChecking) {
                         this.checkAnswer();
                     }
                 });
                 
-                // Input validation
+                // Валидация ввода (только числа и минус)
                 this.elements.answerInput.addEventListener('input', (e) => {
-                    // Allow only numbers and minus sign at the start
                     let value = e.target.value;
                     if (value && !/^-?\d*$/.test(value)) {
                         e.target.value = value.slice(0, -1);
                     }
                 });
                 
-                // Focus input when clicking anywhere
-                document.addEventListener('click', () => {
-                    if (!this.isChecking) {
+                // Фокус на поле ввода при клике на карточку
+                document.addEventListener('click', (e) => {
+                    if (!this.isChecking && e.target !== this.elements.answerInput) {
                         this.elements.answerInput.focus();
                     }
                 });
                 
-                // Listen for messages from parent (Glide)
+                // Обработка сообщений от родительского окна (Glide)
                 window.addEventListener('message', this.handleMessage.bind(this));
                 
-                // Resize canvas on window resize
+                // Ресайз canvas
                 window.addEventListener('resize', () => {
-                    this.elements.confettiCanvas.width = window.innerWidth;
-                    this.elements.confettiCanvas.height = window.innerHeight;
+                    const canvas = this.elements.confettiCanvas;
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
                 });
             }
             
-            // Handle Messages from Parent (Glide)
             handleMessage(event) {
-                // Only accept messages from trusted sources
-                if (event.origin !== window.location.origin && 
-                    !event.origin.includes('glideapps')) {
-                    return;
-                }
+                // Для безопасности можно проверять origin
+                // if (event.origin !== 'https://your-glide-app.glideapp.io') return;
                 
                 const data = event.data;
                 
                 switch (data.type) {
                     case 'SET_DIFFICULTY':
-                        if (this.config.difficulties.includes(parseInt(data.value))) {
-                            this.difficulty = parseInt(data.value);
-                            this.resetGame();
-                            this.showSettingsApplied();
-                        }
+                        this.setDifficulty(data.value);
                         break;
                         
                     case 'SET_RECORD':
-                        const newRecord = parseInt(data.value);
-                        if (!isNaN(newRecord) && newRecord > this.record) {
-                            this.record = newRecord;
-                            this.updateDisplay();
-                        }
+                        this.setRecord(data.value);
                         break;
                         
                     case 'RESET_GAME':
@@ -635,21 +561,38 @@
                 }
             }
             
-            // Load Settings from URL or localStorage
+            setDifficulty(value) {
+                const validDifficulties = [10, 20, 50, 100, 200, 500, 1000];
+                if (validDifficulties.includes(parseInt(value))) {
+                    this.difficulty = parseInt(value);
+                    this.resetGame();
+                    this.showSettingsApplied();
+                }
+            }
+            
+            setRecord(value) {
+                const newRecord = parseInt(value);
+                if (!isNaN(newRecord) && newRecord > this.record) {
+                    this.record = newRecord;
+                    this.updateDisplay();
+                }
+            }
+            
             loadSettings() {
-                // Get parameters from URL
+                // Параметры из URL
                 const urlParams = new URLSearchParams(window.location.search);
                 
-                // Difficulty from URL
+                // Сложность
                 const difficultyParam = urlParams.get('difficulty');
                 if (difficultyParam) {
                     const num = parseInt(difficultyParam);
-                    if (this.config.difficulties.includes(num)) {
+                    const validDifficulties = [10, 20, 50, 100, 200, 500, 1000];
+                    if (validDifficulties.includes(num)) {
                         this.difficulty = num;
                     }
                 }
                 
-                // Record from URL
+                // Рекорд
                 const recordParam = urlParams.get('record');
                 if (recordParam) {
                     const num = parseInt(recordParam);
@@ -658,43 +601,41 @@
                     }
                 }
                 
-                // Load record from localStorage as fallback
+                // Сохраненный рекорд из localStorage
                 const savedRecord = localStorage.getItem('mathGameRecord');
                 if (savedRecord && !recordParam) {
                     this.record = Math.max(this.record, parseInt(savedRecord) || 0);
                 }
             }
             
-            // Generate Math Problem
             generateProblem() {
-                // Random operation: + or -
+                // Случайная операция: + или -
                 this.currentProblem.operand = Math.random() > 0.5 ? '+' : '-';
                 
+                // Генерация чисел в зависимости от сложности
                 if (this.currentProblem.operand === '+') {
-                    // Addition: a + b ≤ difficulty
+                    // Сложение: a + b ≤ difficulty
                     this.currentProblem.a = Math.floor(Math.random() * (this.difficulty + 1));
                     this.currentProblem.b = Math.floor(Math.random() * (this.difficulty - this.currentProblem.a + 1));
                 } else {
-                    // Subtraction: a - b ≥ 0
+                    // Вычитание: b ≤ a
                     this.currentProblem.a = Math.floor(Math.random() * (this.difficulty + 1));
                     this.currentProblem.b = Math.floor(Math.random() * (this.currentProblem.a + 1));
                 }
                 
-                // Update display
+                // Обновление отображения
                 this.elements.problemText.textContent = 
                     `${this.currentProblem.a} ${this.currentProblem.operand} ${this.currentProblem.b} =`;
             }
             
-            // Check User Answer
             checkAnswer() {
-                // Prevent multiple checks
                 if (this.isChecking) return;
                 
                 const answer = this.elements.answerInput.value.trim();
                 
-                // Validate input
+                // Проверка ввода
                 if (!answer) {
-                    this.showMessage('Введите ответ');
+                    this.showMessage('Нужно ввести решение');
                     return;
                 }
                 
@@ -704,192 +645,191 @@
                     return;
                 }
                 
-                // Start checking
                 this.isChecking = true;
                 
-                // Calculate correct answer
+                // Вычисление правильного ответа
                 const correctAnswer = this.currentProblem.operand === '+' 
                     ? this.currentProblem.a + this.currentProblem.b 
                     : this.currentProblem.a - this.currentProblem.b;
                 
                 const isCorrect = userAnswer === correctAnswer;
                 
-                // Process result
+                // Обработка ответа
                 if (isCorrect) {
                     this.handleCorrectAnswer();
                 } else {
                     this.handleIncorrectAnswer();
                 }
                 
-                // Switch to result mode
-                this.switchToResultMode();
-                
-                // Animate result and return to input
-                setTimeout(() => {
-                    this.returnToInputMode();
-                }, this.config.checkDuration);
+                // Показать результат
+                this.showResult(isCorrect);
             }
             
-            // Handle Correct Answer
             handleCorrectAnswer() {
                 this.strike++;
                 
-                // Update strike display
-                this.elements.strikeValue.textContent = this.strike;
-                
-                // Check for new record
+                // Проверка на новый рекорд
                 if (this.strike > this.record) {
                     this.record = this.strike;
                     this.saveRecord();
-                    
-                    // Send message to parent (Glide)
                     this.sendRecordUpdate();
                 }
                 
-                // Set success UI
-                this.elements.resultText.textContent = this.strike % this.config.confettiEvery === 0 
+                // Настройка UI для успеха
+                this.elements.resultText.textContent = this.strike % 5 === 0 
                     ? 'Великолепно!' 
                     : 'Верно!';
-                this.elements.resultText.style.color = 'var(--success)';
-                
-                // Set icon
+                this.elements.resultText.className = 'result-text success';
                 this.elements.resultIcon.className = 'result-icon success';
                 this.elements.resultIcon.innerHTML = '<span class="material-symbols-outlined">check_circle</span>';
                 
-                // Show confetti for special achievements
-                if (this.strike % this.config.confettiEvery === 0 && this.strike > 0) {
+                // Показать GIF конфетти для каждых 5 правильных ответов
+                if (this.strike % 5 === 0 && this.strike > 0) {
+                    this.elements.confettiGif.classList.add('active');
+                    this.elements.resultIcon.style.display = 'none';
                     this.showConfetti();
+                } else {
+                    this.elements.confettiGif.classList.remove('active');
+                    this.elements.resultIcon.style.display = 'flex';
                 }
                 
-                // Update strike counter text
+                // Обновить счетчик серии
                 this.updateStrikeCounter();
             }
             
-            // Handle Incorrect Answer
             handleIncorrectAnswer() {
                 this.strike = 0;
-                this.elements.strikeValue.textContent = '0';
                 
-                // Set error UI
-                this.elements.resultText.textContent = 'Попробуй ещё!';
-                this.elements.resultText.style.color = 'var(--error)';
-                
-                // Set icon
+                // Настройка UI для ошибки
+                this.elements.resultText.textContent = 'Неверно!';
+                this.elements.resultText.className = 'result-text error';
                 this.elements.resultIcon.className = 'result-icon error';
                 this.elements.resultIcon.innerHTML = '<span class="material-symbols-outlined">cancel</span>';
+                this.elements.confettiGif.classList.remove('active');
+                this.elements.resultIcon.style.display = 'flex';
                 
-                // Hide strike counter
+                // Скрыть счетчик серии
                 this.elements.strikeCounter.classList.add('hidden');
             }
             
-            // Switch to Result Mode
-            switchToResultMode() {
+            showResult(isCorrect) {
+                // Переключить режимы
                 this.elements.inputMode.classList.add('hidden');
-                this.elements.resultMode.classList.remove('hidden');
-                this.elements.resultMode.classList.add('fade-in');
+                this.elements.resultMode.classList.add('active');
                 
-                // Animate icon
-                this.elements.resultIcon.classList.add('icon-animation');
+                // Анимация иконки
+                const icon = this.elements.resultIcon;
+                icon.style.animation = 'none';
+                void icon.offsetWidth; // Trigger reflow
+                
+                if (isCorrect) {
+                    icon.classList.remove('animate-slow');
+                    icon.classList.add('animate-fast');
+                }
+                
+                // Задержка и возврат к вводу (как в Flet)
+                const delay = isCorrect ? 2000 : 2000;
+                
+                setTimeout(() => {
+                    this.returnToInput();
+                }, delay);
             }
             
-            // Return to Input Mode
-            returnToInputMode() {
-                this.elements.resultMode.classList.add('hidden');
+            returnToInput() {
+                // Переключить режимы
+                this.elements.resultMode.classList.remove('active');
                 this.elements.inputMode.classList.remove('hidden');
-                this.elements.inputMode.classList.add('fade-in');
                 
-                // Reset animation
-                this.elements.resultIcon.classList.remove('icon-animation');
-                this.elements.resultIcon.style.transform = '';
+                // Сбросить анимацию
+                this.elements.resultIcon.classList.remove('animate-fast', 'animate-slow');
+                this.elements.resultIcon.style.animation = '';
                 
-                // Generate new problem
+                // Новая задача
                 this.generateProblem();
                 
-                // Clear input and focus
+                // Очистить поле ввода и фокус
                 this.elements.answerInput.value = '';
                 this.elements.answerInput.focus();
                 
-                // Enable checking
+                // Разблокировать проверку
                 this.isChecking = false;
             }
             
-            // Show Settings Applied (when difficulty changes)
             showSettingsApplied() {
-                this.switchToResultMode();
+                // Показать результат с настройками
+                this.elements.inputMode.classList.add('hidden');
+                this.elements.resultMode.classList.add('active');
                 
-                this.elements.resultText.textContent = `Сложность: ${this.difficulty}`;
-                this.elements.resultText.style.color = 'var(--primary)';
-                this.elements.resultIcon.className = 'result-icon';
+                // Настройка UI
+                this.elements.resultText.textContent = 'Применяем настройки...';
+                this.elements.resultText.className = 'result-text settings';
+                this.elements.resultIcon.className = 'result-icon settings';
                 this.elements.resultIcon.innerHTML = '<span class="material-symbols-outlined">settings</span>';
+                this.elements.confettiGif.classList.remove('active');
+                this.elements.resultIcon.style.display = 'flex';
                 this.elements.strikeCounter.classList.add('hidden');
                 
-                // Special animation for settings
-                this.elements.resultIcon.style.transform = 'rotate(-720deg)';
-                this.elements.resultIcon.style.transition = 'transform 3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                // Анимация для настроек
+                const icon = this.elements.resultIcon;
+                icon.style.animation = 'none';
+                void icon.offsetWidth;
+                icon.classList.remove('animate-fast');
+                icon.classList.add('animate-slow');
                 
+                // Задержка как в Flet (4 секунды)
                 setTimeout(() => {
-                    this.elements.resultIcon.style.transform = 'rotate(0deg)';
-                }, 50);
-                
-                // Return to input after delay
-                setTimeout(() => {
-                    this.returnToInputMode();
+                    this.returnToInput();
                     this.updateDisplay();
-                }, this.config.settingsDuration);
+                }, 4000);
             }
             
-            // Show Confetti Effect
             showConfetti() {
+                // Показать canvas конфетти
                 this.elements.confettiCanvas.style.display = 'block';
                 
+                // Запустить конфетти
                 confetti({
                     particleCount: 150,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#FFD700', '#4CAF50', '#2196F3', '#FF9800', '#E91E63'],
-                    shapes: ['circle', 'square'],
-                    scalar: 1.2
+                    colors: ['#FFD700', '#4CAF50', '#2196F3', '#FF9800', '#E91E63']
                 });
                 
-                // Hide canvas after animation
+                // Скрыть через 3 секунды
                 setTimeout(() => {
                     this.elements.confettiCanvas.style.display = 'none';
                 }, 3000);
             }
             
-            // Reset Game State
             resetGame() {
                 this.strike = 0;
-                this.elements.strikeValue.textContent = '0';
                 this.generateProblem();
                 this.elements.answerInput.value = '';
                 this.elements.strikeCounter.classList.add('hidden');
             }
             
-            // Update Display
             updateDisplay() {
-                this.elements.difficultyValue.textContent = this.difficulty;
-                this.elements.recordValue.textContent = this.record;
-                this.updateStrikeCounter();
+                // Обновить версию в футере
+                this.elements.versionText.textContent = `Math Game v1.0.2 | До ${this.difficulty}`;
             }
             
-            // Update Strike Counter
             updateStrikeCounter() {
-                if (this.strike >= this.config.showStrikeAt) {
+                if (this.strike >= 3) {
+                    const isRecord = this.strike === this.record;
                     this.elements.strikeText.textContent = 
-                        `Подряд: ${this.strike} ${this.strike === this.record ? '🏆 Рекорд!' : ''}`;
+                        isRecord 
+                            ? `Рекорд достигнут: ${this.record}`
+                            : `Подряд: ${this.strike} (Рекорд: ${this.record})`;
                     this.elements.strikeCounter.classList.remove('hidden');
                 } else {
                     this.elements.strikeCounter.classList.add('hidden');
                 }
             }
             
-            // Save Record to localStorage
             saveRecord() {
                 localStorage.setItem('mathGameRecord', this.record);
             }
             
-            // Send Record Update to Parent (Glide)
             sendRecordUpdate() {
                 const message = {
                     type: 'RECORD_UPDATE',
@@ -899,60 +839,43 @@
                     timestamp: Date.now()
                 };
                 
-                // Send to parent window (Glide)
+                // Отправить родительскому окну (Glide)
                 if (window.parent !== window) {
                     window.parent.postMessage(message, '*');
                 }
                 
-                // Also send to opener if opened in popup
+                // Также отправить opener если есть
                 if (window.opener) {
                     window.opener.postMessage(message, '*');
                 }
             }
             
-            // Show Temporary Message
             showMessage(text) {
-                const originalText = this.elements.resultText.textContent;
-                const originalColor = this.elements.resultText.style.color;
-                
-                this.elements.resultText.textContent = text;
-                this.elements.resultText.style.color = 'var(--warning)';
-                
-                setTimeout(() => {
-                    this.elements.resultText.textContent = originalText;
-                    this.elements.resultText.style.color = originalColor;
-                }, 2000);
+                // Временное сообщение (можно сделать Snackbar как в Flet)
+                alert(text);
             }
             
-            // Hide Loading Screen
             hideLoading() {
                 setTimeout(() => {
-                    this.isLoading = false;
-                    this.elements.loadingScreen.classList.add('hidden');
-                    this.elements.gameContainer.classList.remove('hidden');
-                    this.elements.answerInput.focus();
+                    this.elements.loadingScreen.style.display = 'none';
                 }, 500);
             }
         }
         
-        // Initialize Game when page loads
+        // Инициализация игры
         document.addEventListener('DOMContentLoaded', () => {
-            // Create game instance
             window.mathGame = new MathGame();
             
-            // Expose API for iframe communication
+            // API для внешнего использования
             window.MathGameAPI = {
                 setDifficulty: (value) => {
                     if (window.mathGame) {
-                        window.mathGame.difficulty = value;
-                        window.mathGame.resetGame();
-                        window.mathGame.showSettingsApplied();
+                        window.mathGame.setDifficulty(value);
                     }
                 },
                 setRecord: (value) => {
                     if (window.mathGame) {
-                        window.mathGame.record = value;
-                        window.mathGame.updateDisplay();
+                        window.mathGame.setRecord(value);
                     }
                 },
                 resetGame: () => {
